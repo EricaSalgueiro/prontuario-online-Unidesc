@@ -1,8 +1,7 @@
 
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen) ![Java](https://img.shields.io/badge/Java-21-orange) ![SQLite](https://img.shields.io/badge/SQLite-3.45.1.0-blue)
 ## 📋 Descrição
-Este é o backend de um sistema de prontuário online desenvolvido em **Spring Boot** para um trabalho de faculdade na Unidesc. Ele permite o cadastro, listagem, busca e exportação de pacientes, utilizando **SQLite** como banco de dados leve. Inclui integração com APIs externas para validação de CPF (BrasilAPI) e busca de endereço por CEP (ViaCEP), facilitando o gerenciamento de dados de pacientes.
-
+Este é o backend de um sistema de prontuário online desenvolvido em **Spring Boot** para um trabalho de faculdade na Unidesc. Ele permite o cadastro, listagem, busca e exportação de pacientes, utilizando **SQLite** como banco de dados leve. 
 ## ✨ Funcionalidades
 - **Cadastro de Pacientes**: Adicionar novos pacientes com validação de CPF e busca automática de endereço por CEP.
 - **Listagem de Pacientes**: Visualizar todos os pacientes cadastrados.
