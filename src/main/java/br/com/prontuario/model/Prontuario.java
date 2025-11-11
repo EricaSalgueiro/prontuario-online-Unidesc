@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Prontuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +21,7 @@ public class Prontuario {
 
     private String prescricao;
 
+    @Builder.Default
     private LocalDateTime dataRegistro = LocalDateTime.now();
 
     @ManyToOne

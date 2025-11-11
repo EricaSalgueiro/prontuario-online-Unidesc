@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Medico {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,5 +25,6 @@ public class Medico {
 
     private String telefone;
 
+    @Builder.Default
     private LocalDateTime dataCadastro = LocalDateTime.now();
 }

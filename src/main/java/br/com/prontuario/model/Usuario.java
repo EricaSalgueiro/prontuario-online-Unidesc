@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +25,9 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo; // ADMIN, MEDICO, PACIENTE
 
+    @Builder.Default
     private boolean ativo = true;
 
+    @Builder.Default
     private LocalDateTime criadoEm = LocalDateTime.now();
 }
