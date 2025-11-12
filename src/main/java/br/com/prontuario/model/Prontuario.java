@@ -27,6 +27,8 @@ public class Prontuario {
     @ManyToOne
     private Paciente paciente;
 
+    private String convenio;
+
     @ManyToOne
     private Medico medico;
 }

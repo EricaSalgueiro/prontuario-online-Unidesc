@@ -1,15 +1,14 @@
 package br.com.prontuario.controller;
 
 import br.com.prontuario.model.Usuario;
+import br.com.prontuario.model.TipoUsuario;
 import br.com.prontuario.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final UsuarioService usuarioService;
@@ -20,12 +19,35 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-        boolean valido = usuarioService.autenticarUsuario(usuario.getEmail(), usuario.getSenha()).isPresent();
+        return usuarioService.autenticarUsuario(usuario.getEmail(), usuario.getSenha())
+                .map(u -> {
+                    // Retorna tipo de usuário junto com a mensagem
+                    return ResponseEntity.ok(new LoginResponse(
+                            "Login bem-sucedido",
+                            u.getTipo()
+                    ));
+                })
+                .orElseGet(() -> ResponseEntity.status(401)
+                .body(new LoginResponse("Credenciais inválidas", null)));
+    }
 
-        if (valido) {
-            return ResponseEntity.ok("Login bem-sucedido");
-        } else {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
+    // Classe interna para a resposta do login
+    static class LoginResponse {
+
+        private String mensagem;
+        private TipoUsuario tipoUsuario;
+
+        public LoginResponse(String mensagem, TipoUsuario tipoUsuario) {
+            this.mensagem = mensagem;
+            this.tipoUsuario = tipoUsuario;
+        }
+
+        public String getMensagem() {
+            return mensagem;
+        }
+
+        public TipoUsuario getTipoUsuario() {
+            return tipoUsuario;
         }
     }
 }

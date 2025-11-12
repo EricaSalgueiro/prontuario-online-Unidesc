@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Prontuário Online</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Prontuário Online</h1>
+
+  <div class="tabs">
+    <button onclick="mostrarAba('medicos')">Médicos</button>
+    <button onclick="mostrarAba('pacientes')">Pacientes</button>
+  </div>
+
+  <!-- ABA MÉDICOS -->
+  <div id="medicos" class="aba ativa">
+    <h2>Gerenciar Médicos</h2>
+    <button class="btn" onclick="toggleFormulario('formMedico')">Cadastrar Médico</button>
+
+    <form id="formMedico" class="oculto" onsubmit="salvarMedico(event)">
+      <h3>Cadastro de Médico</h3>
+      <input type="hidden" id="medicoId">
+      <input type="text" id="nomeMedico" placeholder="Nome" required>
+      <input type="email" id="emailMedico" placeholder="Email" required>
+      <input type="password" id="senhaMedico" placeholder="Senha" required>
+      <input type="text" id="crmMedico" placeholder="CRM" required>
+      <button type="submit">Salvar</button>
+      <button type="button" onclick="cancelarCadastro('formMedico')">Cancelar</button>
+    </form>
+
+    <h3>Lista de Médicos</h3>
+    <table id="tabelaMedicos">
+      <thead>
+        <tr><th>Nome</th><th>Email</th><th>CRM</th><th>Ações</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- ABA PACIENTES -->
+  <div id="pacientes" class="aba">
+    <h2>Gerenciar Pacientes</h2>
+    <button class="btn" onclick="toggleFormulario('formPaciente')">Cadastrar Paciente</button>
+
+    <form id="formPaciente" class="oculto" onsubmit="salvarPaciente(event)">
+      <h3>Cadastro de Paciente</h3>
+      <input type="hidden" id="pacienteId">
+      <input type="text" id="nomePaciente" placeholder="Nome" required>
+      <input type="email" id="emailPaciente" placeholder="Email" required>
+      <input type="password" id="senhaPaciente" placeholder="Senha" required>
+      <select id="medicoResponsavel" required>
+        <option value="">Selecione o Médico Responsável</option>
+      </select>
+      <button type="submit">Salvar</button>
+      <button type="button" onclick="cancelarCadastro('formPaciente')">Cancelar</button>
+    </form>
+
+   <h3>Lista de Pacientes</h3>
+<div class="filtro">
+  <label for="filtroMedico">Filtrar por Médico:</label>
+  <select id="filtroMedico" onchange="listarPacientes()">
+    <option value="">Todos os Médicos</option>
+  </select>
+</div>
+
+<table id="tabelaPacientes">
+  <thead>
+    <tr><th>Nome</th><th>Email</th><th>Médico Responsável</th><th>Ações</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+
+  <script src="script.js"></script>
+</body>
+</html>

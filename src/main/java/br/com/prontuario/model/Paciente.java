@@ -32,6 +32,10 @@ public class Paciente {
     @Builder.Default
     private String convenio = "Sem convênio";
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "medico_id")
+    private Medico medico;
+
     @Builder.Default
     private String historicoMedico = "Sem histórico médico";
 }

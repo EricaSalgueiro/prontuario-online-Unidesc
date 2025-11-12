@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
     // Buscar usuário pelo email (para login)
     Optional<Usuario> findByEmail(String email);
 
@@ -16,4 +17,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Buscar por tipo de usuário (ADMIN, MEDICO, PACIENTE)
     List<Usuario> findByTipo(TipoUsuario tipo);
+
+    Optional<Usuario> findByNomeIgnoreCase(String nome);
 }
