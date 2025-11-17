@@ -7,7 +7,6 @@ Este é o backend de um sistema de prontuário online desenvolvido em **Spring B
 - **Listagem de Pacientes**: Visualizar todos os pacientes cadastrados.
 - **Busca de Pacientes**: Pesquisar por nome ou CPF.
 - **Exportação**: Gerar relatórios em PDF ou Excel para pacientes.
-- **API REST**: Endpoints para integração com interfaces gráficas em Java ou scripts em Python.
 - **Integração com APIs Externas**: Validação de CPF via BrasilAPI e busca de endereço via ViaCEP.
 
 ## 🛠 Tecnologias Utilizadas
