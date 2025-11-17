@@ -1,167 +1,140 @@
-const API_URL = "http://localhost:8080/api/usuarios";
+/* =====================
+   UTILITÁRIOS / STORAGE
+   ===================== */
+const KEY_USERS = "po_users_v3";
+const KEY_CURRENT = "po_current_v3";
 
-// Abas
-function mostrarAba(nome) {
-  document.querySelectorAll(".aba").forEach(a => a.classList.remove("ativa"));
-  document.getElementById(nome).classList.add("ativa");
+function genId(){ return 'id_' + Math.random().toString(36).slice(2, 9); }
+function now(){ return new Date().toISOString(); }
+
+function getUsers(){ return JSON.parse(localStorage.getItem(KEY_USERS) || "[]"); }
+function saveUsers(users){ localStorage.setItem(KEY_USERS, JSON.stringify(users)); }
+function getCurrent(){ return JSON.parse(localStorage.getItem(KEY_CURRENT) || "null"); }
+function setCurrent(u){ localStorage.setItem(KEY_CURRENT, JSON.stringify(u)); }
+function clearCurrent(){ localStorage.removeItem(KEY_CURRENT); }
+
+/* =====================
+   ELEMENTOS DA INTERFACE
+   ===================== */
+const loginView = document.getElementById("loginView");
+const registerView = document.getElementById("registerView");
+
+const btnToRegister = document.getElementById("btnToRegister");
+const btnToLogin = document.getElementById("btnToLogin");
+const btnLogin = document.getElementById("btnLogin");
+const btnRegister = document.getElementById("btnRegister");
+
+const authCard = document.querySelector(".auth-card");
+const panel = document.getElementById("panel");
+const panelTitle = document.getElementById("panelTitle");
+const panelBody = document.getElementById("panelBody");
+
+const userNameEl = document.getElementById("userName");
+const userEmailEl = document.getElementById("userEmail");
+const btnLogout = document.getElementById("btnLogout");
+
+const fabAdd = document.getElementById("fabAdd");
+const overlay = document.getElementById("overlay");
+const modalContent = document.getElementById("modalContent");
+
+/* =====================
+   TROCAR TELA LOGIN/REGISTRO
+   ===================== */
+btnToRegister.onclick = () => {
+    loginView.style.display = "none";
+    registerView.style.display = "block";
+};
+
+btnToLogin.onclick = () => {
+    registerView.style.display = "none";
+    loginView.style.display = "block";
+};
+
+/* =====================
+   REGISTRO
+   ===================== */
+btnRegister.onclick = () => {
+    const name = regName.value.trim();
+    const email = regEmail.value.trim().toLowerCase();
+    const pass = regPass.value;
+    const type = regType.value;
+
+    if (!name || !email || !pass || !type) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    let users = getUsers();
+    if (users.some(u => u.email === email)) {
+        alert("Este e-mail já está cadastrado!");
+        return;
+    }
+
+    users.push({
+        id: genId(),
+        name,
+        email,
+        password: pass,
+        type,
+        patients: [],
+        
+        /* Novo modelo para médico */
+        treatments: [],
+
+        /* Novo modelo para paciente */
+        treatmentHistory: []
+    });
+
+    saveUsers(users);
+
+    alert("Conta criada! Faça login.");
+    btnToLogin.click();
+};
+
+/* =====================
+   LOGIN
+   ===================== */
+btnLogin.onclick = () => {
+    const email = loginEmail.value.toLowerCase().trim();
+    const pass = loginPass.value;
+
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === pass);
+
+    if (!user) {
+        alert("Credenciais inválidas!");
+        return;
+    }
+
+    setCurrent(user);
+    showPanel(user);
+};
+
+/* =====================
+   MOSTRAR PAINEL
+   ===================== */
+function showPanel(user){
+    authCard.style.display = "none";
+    panel.style.display = "block";
+
+    userNameEl.textContent = user.name;
+    userEmailEl.textContent = user.email;
+
+    if (user.type === "medico") {
+        panelTitle.textContent = "Painel do Médico";
+        fabAdd.style.display = "block";
+        renderDoctor(user);
+        fabAdd.onclick = openAddPatientModal;
+    } 
+    else {
+        panelTitle.textContent = "Meus Tratamentos";
+        fabAdd.style.display = "none";
+        renderPatient(user);
+    }
 }
 
-// Mostrar/ocultar formulários
-function toggleFormulario(id) {
-  const form = document.getElementById(id);
-  form.classList.toggle("oculto");
-}
+btnLogout.onclick = () => {
+    clearCurrent();
+    location.reload();
+};
 
-// Cancelar cadastro
-function cancelarCadastro(id) {
-  document.getElementById(id).reset();
-  document.getElementById(id).classList.add("oculto");
-}
-
-// Carregar médicos (para cadastro e filtro)
-async function carregarMedicos() {
-  const res = await fetch(`${API_URL}/tipo/MEDICO`);
-  const medicos = await res.json();
-
-  const selectCadastro = document.getElementById("medicoResponsavel");
-  const selectFiltro = document.getElementById("filtroMedico");
-
-  // Limpa selects
-  selectCadastro.innerHTML = '<option value="">Selecione o Médico Responsável</option>';
-  selectFiltro.innerHTML = '<option value="">Todos os Médicos</option>';
-
-  medicos.forEach(m => {
-    const opt1 = document.createElement("option");
-    opt1.value = m.id;
-    opt1.textContent = m.nome;
-    selectCadastro.appendChild(opt1);
-
-    const opt2 = document.createElement("option");
-    opt2.value = m.id;
-    opt2.textContent = m.nome;
-    selectFiltro.appendChild(opt2);
-  });
-}
-
-// Listar médicos
-async function listarMedicos() {
-  const res = await fetch(`${API_URL}/tipo/MEDICO`);
-  const medicos = await res.json();
-  const tbody = document.querySelector("#tabelaMedicos tbody");
-  tbody.innerHTML = "";
-  medicos.forEach(m => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${m.nome}</td>
-        <td>${m.email}</td>
-        <td>${m.crm || ""}</td>
-        <td>
-          <button onclick="editarMedico(${m.id})">Editar</button>
-          <button onclick="excluirUsuario(${m.id})">Excluir</button>
-        </td>
-      </tr>`;
-  });
-  carregarMedicos();
-}
-
-// Listar pacientes com filtro
-async function listarPacientes() {
-  const res = await fetch(`${API_URL}/tipo/PACIENTE`);
-  let pacientes = await res.json();
-  const filtroMedico = document.getElementById("filtroMedico").value;
-
-  // Filtra localmente se o backend não tiver endpoint específico
-  if (filtroMedico) {
-    pacientes = pacientes.filter(p => p.medicoResponsavel && p.medicoResponsavel.id == filtroMedico);
-  }
-
-  // Buscar nomes dos médicos (fallback)
-  const medicosRes = await fetch(`${API_URL}/tipo/MEDICO`);
-  const medicos = await medicosRes.json();
-
-  const tbody = document.querySelector("#tabelaPacientes tbody");
-  tbody.innerHTML = "";
-  pacientes.forEach(p => {
-    const medico = medicos.find(m => m.id === (p.medicoResponsavel?.id || p.medicoId));
-    tbody.innerHTML += `
-      <tr>
-        <td>${p.nome}</td>
-        <td>${p.email}</td>
-        <td>${medico ? medico.nome : "—"}</td>
-        <td>
-          <button onclick="editarPaciente(${p.id})">Editar</button>
-          <button onclick="excluirUsuario(${p.id})">Excluir</button>
-        </td>
-      </tr>`;
-  });
-}
-
-// Cadastrar/atualizar médico
-async function salvarMedico(e) {
-  e.preventDefault();
-  const id = document.getElementById("medicoId").value;
-  const metodo = id ? "PUT" : "POST";
-  const url = id ? `${API_URL}/${id}` : API_URL;
-  const body = {
-    nome: document.getElementById("nomeMedico").value,
-    email: document.getElementById("emailMedico").value,
-    senha: document.getElementById("senhaMedico").value,
-    tipo: "MEDICO",
-    crm: document.getElementById("crmMedico").value
-  };
-  await fetch(url, { method: metodo, headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) });
-  listarMedicos();
-  cancelarCadastro("formMedico");
-}
-
-// Cadastrar/atualizar paciente
-async function salvarPaciente(e) {
-  e.preventDefault();
-  const id = document.getElementById("pacienteId").value;
-  const metodo = id ? "PUT" : "POST";
-  const url = id ? `${API_URL}/${id}` : API_URL;
-  const body = {
-    nome: document.getElementById("nomePaciente").value,
-    email: document.getElementById("emailPaciente").value,
-    senha: document.getElementById("senhaPaciente").value,
-    tipo: "PACIENTE",
-    medicoResponsavel: { id: document.getElementById("medicoResponsavel").value }
-  };
-  await fetch(url, { method: metodo, headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) });
-  listarPacientes();
-  cancelarCadastro("formPaciente");
-}
-
-// Editar médico
-async function editarMedico(id) {
-  const res = await fetch(`${API_URL}/${id}`);
-  const medico = await res.json();
-  document.getElementById("formMedico").classList.remove("oculto");
-  document.getElementById("medicoId").value = medico.id;
-  document.getElementById("nomeMedico").value = medico.nome;
-  document.getElementById("emailMedico").value = medico.email;
-  document.getElementById("crmMedico").value = medico.crm;
-}
-
-// Editar paciente
-async function editarPaciente(id) {
-  const res = await fetch(`${API_URL}/${id}`);
-  const paciente = await res.json();
-  document.getElementById("formPaciente").classList.remove("oculto");
-  document.getElementById("pacienteId").value = paciente.id;
-  document.getElementById("nomePaciente").value = paciente.nome;
-  document.getElementById("emailPaciente").value = paciente.email;
-  document.getElementById("medicoResponsavel").value = paciente.medicoResponsavel?.id || "";
-}
-
-// Excluir
-async function excluirUsuario(id) {
-  if (!confirm("Excluir este registro?")) return;
-  await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-  listarMedicos();
-  listarPacientes();
-}
-
-// Inicializar
-listarMedicos();
-listarPacientes();
