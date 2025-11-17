@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prontuário Online — Sistema</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- CSS externo -->
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+    <header class="card">
+      <h1>Prontuário Online — Sistema</h1>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div id="userInfo" class="muted">Você não está logado</div>
+        <button id="logoutBtn" class="btn ghost" style="display:none" onclick="logout()">Sair</button>
+      </div>
+    </header>
+
+    <!-- AUTH -->
+    <div id="authArea" style="margin-top:18px">
+      <div class="grid two-col" id="authGrid">
+        <div class="card">
+          <h3>Entrar</h3>
+          <label>E-mail</label>
+          <input id="loginEmail" type="email" placeholder="seu@exemplo.com">
+          <label>Senha</label>
+          <input id="loginPassword" type="password" placeholder="Senha">
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" onclick="login()">Entrar</button>
+            <button class="btn ghost" onclick="showRegister()">Criar conta</button>
+          </div>
+          <p class="muted" style="margin-top:12px">Conta de teste: <strong>medico@exemplo.com</strong> / <strong>senha123</strong></p>
+        </div>
+
+        <div class="card" id="registerCard">
+          <h3>Registrar conta</h3>
+          <label>Nome completo</label>
+          <input id="regName" type="text" placeholder="Nome">
+          <label>E-mail</label>
+          <input id="regEmail" type="email" placeholder="seu@exemplo.com">
+          <label>Senha</label>
+          <input id="regPassword" type="password" placeholder="Senha">
+          <label>Tipo</label>
+          <select id="regType">
+            <option value="">-- selecione --</option>
+            <option value="medico">Médico</option>
+            <option value="paciente">Paciente</option>
+          </select>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" onclick="register()">Cadastrar</button>
+            <button class="btn ghost" onclick="clearRegister()">Limpar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL -->
+    <div id="panel" class="card" style="margin-top:18px; display:none">
+      <div class="grid two-col">
+        <div class="card" style="min-height:220px">
+          <div id="panelBody"></div>
+        </div>
+        <div class="card">
+          <h4>Atalhos</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <button class="btn ghost" onclick="exportData()">Exportar backup</button>
+            <button class="btn ghost" onclick="importData()">Importar backup</button>
+            <button class="btn" id="btnAddPatientSide" style="display:none" onclick="openAddPatient()">+ Novo paciente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>Prontuário 2025</footer>
+  </div>
+
+  <!-- FAB -->
+  <button id="fab" title="Adicionar paciente" onclick="openAddPatient()">+</button>
+
+  <!-- Modal overlay -->
+  <div id="overlay">
+    <div id="modal" class="card"><div id="modalContent"></div></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- JS externo -->
+  <script src="script.js"></script>
+</body>
+</html>
