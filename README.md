@@ -5,9 +5,9 @@ Este é o backend de um sistema de prontuário online desenvolvido em **Spring B
 ## ✨ Funcionalidades
 - **Cadastro de Pacientes**: Adicionar novos pacientes com validação de CPF e busca automática de endereço por CEP.
 - **Listagem de Pacientes**: Visualizar todos os pacientes cadastrados.
-- **Busca de Pacientes**: Pesquisar por nome ou CPF.
-- **Exportação**: Gerar relatórios em PDF ou Excel para pacientes.
-- **Integração com APIs Externas**: Validação de CPF via BrasilAPI e busca de endereço via ViaCEP.
+- **Administração de tratamento e remédios**
+
+
 
 ## 🛠 Tecnologias Utilizadas
 - **Java 21**: Linguagem principal.
@@ -16,6 +16,9 @@ Este é o backend de um sistema de prontuário online desenvolvido em **Spring B
 - **SQLite**: Banco de dados embutido.
 - **RestTemplate**: Para chamadas a APIs externas.
 - **Maven**: Gerenciamento de dependências.
+- **HTML**
+- **CSS**
+- **JavaScrpt** 
 
 ## 📋 Pré-requisitos
 - **Java 21** instalado (JDK).
