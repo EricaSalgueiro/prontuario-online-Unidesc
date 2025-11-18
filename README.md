@@ -44,7 +44,6 @@ Este é o backend de um sistema de prontuário online desenvolvido em **Spring B
         - `POST /pacientes` (cadastrar paciente com JSON)
         - `GET /pacientes` (listar pacientes)
         - `GET /pacientes/busca?nome=João` (buscar por nome)
-        - `GET /pacientes/export/pdf` (exportar em PDF)
 
 4. **Teste**:
     - Use Postman ou navegador para testar.
@@ -79,4 +78,4 @@ Uso educacional. Sem licença específica.
 
 ---
 
-**Desenvolvido por Erica Salgueiro** para trabalho de faculdade na Unidesc. 😊
+**Desenvolvido por Erica Salgueiro e Ricardo Roque** para trabalho de faculdade na Unidesc. 😊
