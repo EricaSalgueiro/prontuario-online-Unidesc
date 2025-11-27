@@ -1,11 +1,11 @@
-FROM maven:3.8.5-openjdk-17-slim AS build
+FROM eclipse-temurin:17-jdk-jammy 
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:25-jdk-jammy
+FROM eclipse-temurin:17-jdk-jammy
+
 WORKDIR /app
-COPY --from=build /app/target/prontuario-online-*.jar ./prontuario-online.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "prontuario-online.jar"]
+COPY --from=0 /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
